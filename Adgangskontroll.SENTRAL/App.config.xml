@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-	<connectionStrings>
-		<add name="PostgresConnection" connectionString="Host=ider-database.westeurope.cloudapp.azure.com;Port=5432;Username=;Password=;Database=" providerName="Npgsql" />
-	</connectionStrings>
-</configuration>

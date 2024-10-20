@@ -14,8 +14,7 @@ namespace Adgangskontroll.SENTRAL.Data
 
         public DbConnection()
         {
-            // ConnectionString ligger i App.config -> bruk config manager for å hente den
-            _connectionString = ConfigurationManager.ConnectionStrings["PostgresConnection"].ConnectionString;
+            _connectionString = "Host=ider-database.westeurope.cloudapp.azure.com;Port=5432;Username=;Password=;Database=";
         }
 
         public NpgsqlConnection GetConnection()
