@@ -27,11 +27,10 @@ namespace Adgangskontroll.SENTRAL.Repository
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = connection;
-                    cmd.CommandText = "INSERT INTO Bruker (BrukerID, Etternavn, Fornavn, Epost, KortID, PIN) " +
-                                      "VALUES (@BrukerID, @Etternavn, @Fornavn, @Epost, @KortID, @PIN)";
+                    cmd.CommandText = "INSERT INTO Bruker (Etternavn, Fornavn, Epost, KortID, PIN) " +
+                                      "VALUES (@Etternavn, @Fornavn, @Epost, @KortID, @PIN)";
 
-                    // Map parametere for å forhindre SQL-injeksjon
-                    cmd.Parameters.AddWithValue("BrukerID", bruker.BrukerID);
+                    // Mappe parametere for å forhindre SQL-injeksjon
                     cmd.Parameters.AddWithValue("Etternavn", bruker.Etternavn);
                     cmd.Parameters.AddWithValue("Fornavn", bruker.Fornavn);
                     cmd.Parameters.AddWithValue("Epost", bruker.Epost);
@@ -41,7 +40,6 @@ namespace Adgangskontroll.SENTRAL.Repository
                     cmd.ExecuteNonQuery();
                 }
             }
-            Console.WriteLine("Ny bruker opprettet.");
         }
     }
 }
