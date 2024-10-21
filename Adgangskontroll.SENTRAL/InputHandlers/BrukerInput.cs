@@ -9,74 +9,35 @@ namespace Adgangskontroll.SENTRAL.InputHandlers
 {
     public class BrukerInput
     {
-        public Bruker GetBrukerInput()
+        public Bruker HentOpprettetBrukerInput()
         {
             Bruker nyBruker = new Bruker();
 
-            // Fornavn input med maks. 50 tegn
-            Console.WriteLine("Skriv inn Fornavn:");
-            nyBruker.Fornavn = GetValidStringInput(50, "Fornavn");
-
-            // Etternavn input med maks. 50 tegn
-            Console.WriteLine("Skriv inn Etternavn:");
-            nyBruker.Etternavn = GetValidStringInput(50, "Etternavn");
-
-            // Epost input med validering
-            Console.WriteLine("Skriv inn Epost:");
-            nyBruker.Epost = GetValidEmailInput(150);
-
-            // KortID input med 4 siffer
-            Console.WriteLine("Skriv inn KortID (4 siffer):");
-            nyBruker.KortID = GetValidDigitInput(4, "KortID");
-
-            // PIN input med 4 siffer
-            Console.WriteLine("Skriv inn PIN (4 siffer:");
-            nyBruker.PIN = GetValidDigitInput(4, "PIN");
+            nyBruker.Fornavn = HentBrukerInput("Skriv inn fornavn:", null, input => ErGyldigStringInput(input, 50), true);
+            nyBruker.Etternavn = HentBrukerInput("Skriv inn etternavn:", null, input => ErGyldigStringInput(input, 50), true);
+            nyBruker.Epost = HentBrukerInput("Skriv inn e-post:", null, input => ErGyldigEpostInput(input, 150), true);
+            nyBruker.KortID = HentBrukerInput("Skriv inn kort ID (4 siffer):", null, input => ErGyldigSifferInput(input, 4), true);
+            nyBruker.PIN = HentBrukerInput("Skriv inn PIN (4 siffer):", null, input => ErGyldigSifferInput(input, 4), true);
 
             return nyBruker;
         }
 
-        // String validering
-        private string GetValidStringInput(int maksLengde, string stringVerdi)
+        public Bruker HentOppdatertBrukerInput(int brukerID)
         {
-            string input;
-            do
-            {
-                input = Console.ReadLine();
-                if (input.Length > maksLengde)
-                {
-                    Console.WriteLine($"{stringVerdi} kan ikke være lengre enn {maksLengde} tegn. Vennligst prøv igjen.");
-                }
-            } while (input.Length > maksLengde);
+            Bruker bruker = new Bruker();
+            bruker.BrukerID = brukerID;
 
-            return input;
-        }
+            bruker.Fornavn = HentBrukerInput("Skriv inn nytt fornavn, eller trykk Enter for å beholde eksisterende fornavn:", bruker.Fornavn, input => ErGyldigStringInput(input, 50), false);
+            bruker.Etternavn = HentBrukerInput("Skriv inn nytt etternavn, eller trykk Enter for å beholde eksisterende etternavn:", bruker.Etternavn, input => ErGyldigStringInput(input, 50), false);
+            bruker.Epost = HentBrukerInput("Skriv inn ny e-post, eller trykk Enter for å beholde eksisterende e-post:", bruker.Epost, input => ErGyldigEpostInput(input, 150), false);
+            bruker.KortID = HentBrukerInput("Skriv inn ny kort ID (4 siffer), eller trykk Enter for å beholde eksisterende kort ID:", bruker.KortID, input => ErGyldigSifferInput(input, 4), false);
+            bruker.PIN = HentBrukerInput("Skriv inn ny PIN (4 siffer), eller trykk Enter for å beholde eksisterende PIN:", bruker.PIN, input => ErGyldigSifferInput(input, 4), false);
 
-        // Validering for epost
-        private string GetValidEmailInput(int maksLengde)
-        {
-            string input;
-            do
-            {
-                input = Console.ReadLine();
-
-                // Sjekk om epost ikke er lengre enn 150 tegn
-                if (input.Length > maksLengde)
-                {
-                    Console.WriteLine($"Epost kan ikke være lengre enn {maksLengde} tegn. Vennligst prøv igjen.");
-                }
-                // Sjekk om epost er gyldig
-                else if (!IsValidEmail(input))
-                {
-                    Console.WriteLine("Ugyldig epost. Vennligst skriv inn en gyldig epostadresse (må inneholde nøyaktig én '@' og et domenenavn).");
-                }
-            } while (input.Length > maksLengde || !IsValidEmail(input));
-
-            return input;
+            return bruker;
         }
 
         // Metode for å sjekke om epost er gyldig med '@' og '.'
-        private bool IsValidEmail(string epost)
+        private bool ErGyldigEpost(string epost)
         {
             // Sjekk at epost inneholder kun ett '@'
             int alfaKroell = epost.Split('@').Length - 1;
@@ -92,30 +53,8 @@ namespace Adgangskontroll.SENTRAL.InputHandlers
             return true;
         }
 
-        // Metode for å validere input for KortID og PIN
-        private string GetValidDigitInput(int lengde, string stringVerdi)
-        {
-            string input;
-            do
-            {
-                input = Console.ReadLine();
-
-                // Sjekk om input inneholder kun 4 siffer
-                if (input.Length != lengde)
-                {
-                    Console.WriteLine($"{stringVerdi} må være nøyaktig {lengde} siffer. Vennligst prøv igjen.");
-                }
-                else if (!IsAllDigits(input))
-                {
-                    Console.WriteLine($"{stringVerdi} må bare inneholde siffer. Vennligst prøv igjen.");
-                }
-            } while (input.Length != lengde || !IsAllDigits(input));
-
-            return input;
-        }
-
         // Hjelpemetode for å sjekke om tegn er siffer
-        private bool IsAllDigits(string input)
+        private bool ErAlleTegnSiffer(string input)
         {
             foreach (char c in input)
             {
@@ -125,6 +64,58 @@ namespace Adgangskontroll.SENTRAL.InputHandlers
                 }
             }
             return true;
+        }
+
+        // Sjekk om input for brukerID er gyldig
+        public int ErGyldigIntInput()
+        {
+            int resultat;
+            while (!int.TryParse(Console.ReadLine(), out resultat))
+            {
+                Console.WriteLine("Ugyldig input. Vennligst skriv inn et gyldig tall.");
+            }
+            return resultat;
+        }
+
+        private string HentBrukerInput(string prompt, string lagretVerdi, Func<string, bool> validerInput, bool erIkkeNull)
+        {
+            string input;
+
+            do
+            {
+                Console.WriteLine(prompt);
+                // Dersom man oppdaterer en eksisterende bruker, så kan man trykke enter for å beholde verdi fra før
+                // erIkkeNull == false  -->  kan være null input, gjelder kun brukeroppdatering
+                input = Console.ReadLine();
+                if (string.IsNullOrEmpty(input) && !erIkkeNull)
+                {
+                    // Returner lagret verdi fra databasen hvis brukeren trykker på Enter uten å skrive inn ny verdi
+                    return lagretVerdi;
+                }
+                else if (validerInput(input))
+                {
+                    // Returner validert input
+                    return input;
+                }
+                Console.WriteLine("Ugyldig input. Vennligst prøv igjen");
+            } while (erIkkeNull || !validerInput(input));
+
+            return input;
+        }
+
+        private bool ErGyldigStringInput(string input, int maksLengde)
+        {
+            return input.Length <= maksLengde;
+        }
+
+        private bool ErGyldigEpostInput(string input, int maksLengde)
+        {
+            return input.Length <= maksLengde && ErGyldigEpost(input);
+        }
+
+        private bool ErGyldigSifferInput(string input, int lengde)
+        {
+            return input.Length == lengde && ErAlleTegnSiffer(input);
         }
     }
 }
