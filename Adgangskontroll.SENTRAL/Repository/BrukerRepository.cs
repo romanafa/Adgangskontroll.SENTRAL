@@ -27,12 +27,12 @@ namespace Adgangskontroll.SENTRAL.Repository
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = connection;
-                    cmd.CommandText = "INSERT INTO Bruker (Etternavn, Fornavn, Epost, KortID, PIN) " +
-                                      "VALUES (@Etternavn, @Fornavn, @Epost, @KortID, @PIN)";
+                    cmd.CommandText = "INSERT INTO Bruker (Fornavn, Etternavn, Epost, KortID, PIN) " +
+                                      "VALUES (@Fornavn, @Etternavn, @Epost, @KortID, @PIN)";
 
                     // Mappe parametere for å forhindre SQL-injeksjon
-                    cmd.Parameters.AddWithValue("Etternavn", bruker.Etternavn);
                     cmd.Parameters.AddWithValue("Fornavn", bruker.Fornavn);
+                    cmd.Parameters.AddWithValue("Etternavn", bruker.Etternavn);
                     cmd.Parameters.AddWithValue("Epost", bruker.Epost);
                     cmd.Parameters.AddWithValue("KortID", bruker.KortID);
                     cmd.Parameters.AddWithValue("PIN", bruker.PIN);

@@ -13,13 +13,13 @@ namespace Adgangskontroll.SENTRAL.InputHandlers
         {
             Bruker nyBruker = new Bruker();
 
-            // Etternavn input med maks. 50 tegn
-            Console.WriteLine("Skriv inn Etternavn:");
-            nyBruker.Etternavn = GetValidStringInput(50, "Etternavn");
-
             // Fornavn input med maks. 50 tegn
             Console.WriteLine("Skriv inn Fornavn:");
             nyBruker.Fornavn = GetValidStringInput(50, "Fornavn");
+
+            // Etternavn input med maks. 50 tegn
+            Console.WriteLine("Skriv inn Etternavn:");
+            nyBruker.Etternavn = GetValidStringInput(50, "Etternavn");
 
             // Epost input med validering
             Console.WriteLine("Skriv inn Epost:");
