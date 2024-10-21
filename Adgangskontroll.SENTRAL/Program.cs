@@ -15,8 +15,11 @@ namespace Adgangskontroll.SENTRAL
                 Console.WriteLine("Velg en av instillingne i menyen.");
                 Console.WriteLine("1. Legg til bruker");
                 Console.WriteLine("2. Rediger bruker");
-                Console.WriteLine("3. Kortleser");
-                Console.WriteLine("4. Avslutt programmet");
+                Console.WriteLine("3. Slett bruker");
+                Console.WriteLine("4. Kortleser administrasjon");
+                Console.WriteLine("5. Kortleser forespørsel");
+                Console.WriteLine("6. Se rapport meny");
+                Console.WriteLine("7. Avslutt programmet");
                 int menyValg;
                 try
                 {
@@ -52,25 +55,37 @@ namespace Adgangskontroll.SENTRAL
                         break;
 
                     case 3:
-                        // Kortleser program - mer kommer
+                        // Slett bruker
                         Console.WriteLine("Ikke implementert enda");
 
                         break;
-
                     case 4:
-                        // Avslutt programmet
-                        Console.WriteLine("Avslutter programmet...");
-                        loop = false;
+                        // Kortleser administrasjon
+                        Console.WriteLine("Ikke implementert enda");
                         break;
 
+                    case 5:
+                        // Kortleser forespørsel
+                        Console.WriteLine("Ikke implementert enda");
+                        break;
+                    case 6:
+                        // Rapportmeny 
+                        Console.WriteLine("Ikke implementert enda");
+                        break;
+
+                    case 7:
+                        // Avslutt programmet
+                        Console.WriteLine("Avslutter programmet...");
+                        Environment.Exit(0);
+                        break;
                     default:
                         // Dersom bruker velger ugyldig tall
                         Console.WriteLine("Ugyldig valg, prøv igjen.");
                         break;
                 }
 
-                // Ask if the user wants to return to the main menu or exit
-                if (loop) // Only ask if loop hasn't been set to false
+                // Spør brukeren om hen vil tilbake til oppstartsmeny
+                if (loop)
                 {
                     Console.WriteLine("Vil du gå tilbake til hovedmenyen? Tast 'ja' eller 'nei'");
                     string brukerValg = Console.ReadLine();
@@ -80,7 +95,6 @@ namespace Adgangskontroll.SENTRAL
                     }
                 }
             }
-
             Console.WriteLine("Programmet er avsluttet.");
         }
     }
