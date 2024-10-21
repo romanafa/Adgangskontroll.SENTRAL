@@ -8,6 +8,8 @@ namespace Adgangskontroll.SENTRAL
     {
         static void Main(string[] args)
         {
+            BrukerRepository brukerRepository = new BrukerRepository();
+            BrukerInput brukerInput = new BrukerInput();
 
             bool loop = true;
             while (loop)
@@ -33,13 +35,24 @@ namespace Adgangskontroll.SENTRAL
                 switch (menyValg)
                 {
                     case 1:
-                        // Opprett bruker instans og lagre til database
-                        BrukerInput brukerInput = new BrukerInput();
-                        Bruker nyBruker = brukerInput.GetBrukerInput();
+                        Bruker nyBruker = brukerInput.HentOpprettetBrukerInput();
+
+                        // Sjekk om epost finnes i databasen
+                        if (brukerRepository.SjekkOmEpostEksisterer(nyBruker.Epost))
+                        {
+                            Console.WriteLine("En bruker med denne e-posten finnes allerede. Vennligst prøv på nytt med en annen e-post.");
+                            break;  
+                        }
+
+                        // Sjekk om kort ID finnes i databasen
+                        if (brukerRepository.SjekkOmKortIDEksisterer(nyBruker.KortID))
+                        {
+                            Console.WriteLine("En bruker med denne kort ID finnes allerede. Vennligst prøv på nytt med en annen kort ID.");
+                            break;  
+                        }
 
                         try
                         {
-                            BrukerRepository brukerRepository = new BrukerRepository();
                             brukerRepository.OpprettBruker(nyBruker);
                             Console.WriteLine("Bruker ble lagt til i databasen.");
                         }
@@ -51,14 +64,40 @@ namespace Adgangskontroll.SENTRAL
                         break;
                     case 2:
                         // Rediger bruker
-                        Console.WriteLine("Ikke implementert enda");
-                        break;
+                        while (true)
+                        {
+                            // Spør om bruker ID og valider om den er gyldig, og sjekk om bruker eksisterer
+                            Console.WriteLine("Skriv inn BrukerID på brukeren som skal oppdateres:");
+
+                            // Sjekk om input er gyldig
+                            int brukerID = brukerInput.ErGyldigIntInput();
+
+                            // Sjekk om bruker med oppgitt bruker ID finnes i databasen
+                            Bruker eksisterendeBruker = brukerRepository.FinnBrukerEtterID(brukerID);
+
+                            if (eksisterendeBruker == null)
+                            {
+                                // Dersom brukeren ikke finnes, spør om ID igjen
+                                Console.WriteLine($"Ingen bruker funnet med BrukerID {brukerID}. Vennligst prøv igjen.");
+                            }
+                            else
+                            {
+                                Bruker oppdatertBruker = brukerInput.HentOppdatertBrukerInput(brukerID);
+
+                                // Oppdater brukerdata i databasen
+                                brukerRepository.OppdaterBruker(oppdatertBruker);
+                                Console.WriteLine("Brukerdata ble oppdatert i databasen.");
+                                break; 
+                            }
+                        }
+                    break;
 
                     case 3:
                         // Slett bruker
                         Console.WriteLine("Ikke implementert enda");
 
                         break;
+
                     case 4:
                         // Kortleser administrasjon
                         Console.WriteLine("Ikke implementert enda");
@@ -68,6 +107,7 @@ namespace Adgangskontroll.SENTRAL
                         // Kortleser forespørsel
                         Console.WriteLine("Ikke implementert enda");
                         break;
+
                     case 6:
                         // Rapportmeny 
                         Console.WriteLine("Ikke implementert enda");
@@ -78,6 +118,7 @@ namespace Adgangskontroll.SENTRAL
                         Console.WriteLine("Avslutter programmet...");
                         Environment.Exit(0);
                         break;
+
                     default:
                         // Dersom bruker velger ugyldig tall
                         Console.WriteLine("Ugyldig valg, prøv igjen.");
