@@ -112,6 +112,34 @@ namespace Adgangskontroll.SENTRAL.Repository
             }
         }
 
+        public void SlettBruker(int brukerID)
+        {
+            using (var connection = _db.GetConnection())
+            {
+                connection.Open();
+
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = "DELETE FROM Bruker WHERE BrukerID = @BrukerID";
+
+                    // Add parameter to prevent SQL injection
+                    cmd.Parameters.AddWithValue("BrukerID", brukerID);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine($"Bruker med BrukerID {brukerID} ble slettet.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Ingen bruker funnet med BrukerID {brukerID}.");
+                    }
+                }
+            }
+        }
+
         public Bruker FinnBrukerEtterID(int brukerID)
         {
             Bruker bruker = null;

@@ -93,9 +93,28 @@ namespace Adgangskontroll.SENTRAL
                     break;
 
                     case 3:
-                        // Slett bruker
-                        Console.WriteLine("Ikke implementert enda");
+                        while (true)
+                        {
+                            // Slett bruker
+                            Console.WriteLine("Skriv inn BrukerID til brukeren du ønsker å slette:");
+                            // Sjekk om input er gyldig
+                            int brukerIDslett = brukerInput.ErGyldigIntInput();
+                            // Sjekk om bruker med oppgitt bruker ID finnes i databasen
+                            Bruker eksisterendeBruker = brukerRepository.FinnBrukerEtterID(brukerIDslett);
 
+                            if (eksisterendeBruker == null)
+                            {
+                                // Dersom brukeren ikke finnes, spør om ID igjen
+                                Console.WriteLine($"Ingen bruker funnet med BrukerID {brukerIDslett}. Vennligst prøv igjen.");
+                            }
+                            else
+                            {
+                                // Slett brukerdata fra databasen
+                                brukerRepository.SlettBruker(brukerIDslett);
+                                Console.WriteLine("Brukerdata ble slettet.");
+                                break;
+                            }
+                        }
                         break;
 
                     case 4:
