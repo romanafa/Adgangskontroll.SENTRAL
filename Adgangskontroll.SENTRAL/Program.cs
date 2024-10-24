@@ -147,9 +147,9 @@ namespace Adgangskontroll.SENTRAL
                 // Spør brukeren om hen vil tilbake til oppstartsmeny
                 if (loop)
                 {
-                    Console.WriteLine("Vil du gå tilbake til hovedmenyen? Tast 'ja' eller 'nei'");
+                    Console.WriteLine("Vil du gå tilbake til hovedmenyen? Tast 'ja' eller noe annet for å avslutte programmet");
                     string brukerValg = Console.ReadLine();
-                    if (brukerValg.ToLower() == "nei")
+                    if (brukerValg.ToLower() != "ja")
                     {
                         loop = false;
                     }
