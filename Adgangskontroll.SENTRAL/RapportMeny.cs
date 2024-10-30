@@ -1,4 +1,5 @@
-﻿using Adgangskontroll.SENTRAL.Repository;
+﻿using Adgangskontroll.SENTRAL.Models;
+using Adgangskontroll.SENTRAL.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace Adgangskontroll.SENTRAL
                 {
                     case 1:
                         // Liste brukerdata på grunnlag av brukernavn
-                        GenererBrukerData();
+                        VisBrukerDataEtterEpost();
                         break;
                     case 2:
                         // Liste adgangslogg på grunnlag av brukernavn mellom to datoer
@@ -73,9 +74,31 @@ namespace Adgangskontroll.SENTRAL
             }
         }
 
-        private void GenererBrukerData()
+        private void VisBrukerDataEtterEpost()
         {
-            
+            Console.WriteLine("Skriv inn epost til brukeren du ønsker å søke etter:");
+            string epost = Console.ReadLine();
+
+            Bruker bruker = _brukerRepository.FinnBrukerEtterEpost(epost);
+
+            if (bruker != null)
+            {
+                Console.WriteLine("");
+                Console.WriteLine("Bruker funnet:");
+                Console.WriteLine($"BrukerID: {bruker.BrukerID}");
+                Console.WriteLine($"Fornavn: {bruker.Fornavn}");
+                Console.WriteLine($"Etternavn: {bruker.Etternavn}");
+                Console.WriteLine($"Epost: {bruker.Epost}");
+                Console.WriteLine($"KortID: {bruker.KortID}");
+                Console.WriteLine($"PIN: {bruker.PIN}");
+                Console.WriteLine($"Gyldig Fra: {bruker.GyldigFra}");
+                Console.WriteLine($"Gyldig Til: {bruker.GyldigTil}");
+            }
+            else
+            {
+                Console.WriteLine("Ingen bruker funnet med denne e-posten.");
+            }
+            Console.WriteLine("");
         }
     }
 }

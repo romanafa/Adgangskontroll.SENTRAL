@@ -226,5 +226,42 @@ namespace Adgangskontroll.SENTRAL.Repository
                 }
             }
         }
+
+        public Bruker FinnBrukerEtterEpost(string epost)
+        {
+            using (var connection = _db.GetConnection())
+            {
+                connection.Open();
+
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = "SELECT * FROM Bruker WHERE Epost = @Epost";
+                    cmd.Parameters.AddWithValue("Epost", epost);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            // Map database columns to the Bruker object properties
+                            return new Bruker
+                            {
+                                BrukerID = reader.GetInt32(reader.GetOrdinal("BrukerID")),
+                                Fornavn = reader.GetString(reader.GetOrdinal("Fornavn")),
+                                Etternavn = reader.GetString(reader.GetOrdinal("Etternavn")),
+                                Epost = reader.GetString(reader.GetOrdinal("Epost")),
+                                KortID = reader.GetString(reader.GetOrdinal("KortID")),
+                                PIN = reader.GetString(reader.GetOrdinal("PIN")),
+                                GyldigFra = reader.GetDateTime(reader.GetOrdinal("GyldigFra")),
+                                GyldigTil = reader.GetDateTime(reader.GetOrdinal("GyldigTil"))
+                            };
+                        }
+                    }
+                }
+            }
+
+            // Return null if no user is found
+            return null;
+        }
     }
 }
