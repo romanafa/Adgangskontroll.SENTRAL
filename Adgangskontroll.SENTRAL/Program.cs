@@ -10,6 +10,7 @@ namespace Adgangskontroll.SENTRAL
         {
             BrukerRepository brukerRepository = new BrukerRepository();
             BrukerInput brukerInput = new BrukerInput();
+            RapportMeny rapportMeny = new RapportMeny(brukerRepository);
 
             bool loop = true;
             while (loop)
@@ -129,7 +130,7 @@ namespace Adgangskontroll.SENTRAL
 
                     case 6:
                         // Rapportmeny 
-                        Console.WriteLine("Ikke implementert enda");
+                        rapportMeny.StartRapportMeny();
                         break;
 
                     case 7:
