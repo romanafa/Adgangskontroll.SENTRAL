@@ -42,14 +42,14 @@ namespace Adgangskontroll.SENTRAL
                         if (brukerRepository.SjekkOmEpostEksisterer(nyBruker.Epost))
                         {
                             Console.WriteLine("En bruker med denne e-posten finnes allerede. Vennligst prøv på nytt med en annen e-post.");
-                            break;  
+                            break;
                         }
 
                         // Sjekk om kort ID finnes i databasen
                         if (brukerRepository.SjekkOmKortIDEksisterer(nyBruker.KortID))
                         {
                             Console.WriteLine("En bruker med denne kort ID finnes allerede. Vennligst prøv på nytt med en annen kort ID.");
-                            break;  
+                            break;
                         }
 
                         try
@@ -61,7 +61,7 @@ namespace Adgangskontroll.SENTRAL
                         {
                             Console.WriteLine($"{ex.Message}");
                         }
-                            
+
                         break;
                     case 2:
                         // Rediger bruker
@@ -88,10 +88,10 @@ namespace Adgangskontroll.SENTRAL
                                 // Oppdater brukerdata i databasen
                                 brukerRepository.OppdaterBruker(oppdatertBruker);
                                 Console.WriteLine("Brukerdata ble oppdatert i databasen.");
-                                break; 
+                                break;
                             }
                         }
-                    break;
+                        break;
 
                     case 3:
                         while (true)

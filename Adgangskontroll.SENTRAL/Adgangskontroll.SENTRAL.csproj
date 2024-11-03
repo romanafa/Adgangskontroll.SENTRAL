@@ -12,4 +12,10 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Adgangskontroll.Kortleser">
+      <HintPath>..\..\Adgangskontroll.Kortleser\Adgangskontroll.Kortleser\bin\Debug\net8.0\Adgangskontroll.Kortleser.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Adgangskontroll.SENTRAL.Models
+﻿namespace Adgangskontroll.SENTRAL.Models
 {
     public class Bruker
     {

@@ -1,16 +1,8 @@
-﻿using Adgangskontroll.SENTRAL.Data;
-using Adgangskontroll.SENTRAL.InputHandlers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
+﻿using Adgangskontroll.SENTRAL.Models;
+using Adgangskontroll.SENTRAL.Repository;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Data;
-using System.Diagnostics;
-using System.Data;
 
 namespace Adgangskontroll.SENTRAL.TCP_kortleser
 {
@@ -24,12 +16,14 @@ namespace Adgangskontroll.SENTRAL.TCP_kortleser
 
         bool harforbindelse = true;
 
-        Database db = new Database();
+        BrukerRepository db = new BrukerRepository();
 
-        static string kort_ID;
-        static string kortleser_ID;
-        static string startTid;
-        static string sluttTid;
+        //static string kort_ID; må sette inn riktige variabler
+        //static string kortleser_ID;
+        //static string startTid;
+        //static string sluttTid;
+
+
 
         public void Start()
         {
@@ -78,10 +72,10 @@ namespace Adgangskontroll.SENTRAL.TCP_kortleser
                         string pin = dataFraKortleser.Substring(indeksPin + 2, 4);
                         string kortleser_id = dataFraKortleser.Substring(indeksLeser + 2, 4);
 
-                        dataTilKortleser = db.Autentisering(Kort_ID, pin, kortleser_id);
+                        dataTilKortleser = db.Autentisering(Kort_ID, pin, kortleser_id); // må sette inn riktig metode
 
                         if (dataTilKortleser == "Godkjent") db.LeggTilLogg(0, kortleser_id, Kort_ID);   //Loggfører godkjent
-                        else db.LeggTilLogg(1, kortleser_id, Kort_ID);  //loggfører ikke godkjent
+                        else db.LeggTilLogg(1, kortleser_id, Kort_ID);  //loggfører ikke godkjent // må sette inn riktig metode
                     }
                     else if (dataFraKortleser.Length == 14)     // String med denne lengden vil alltid være kort-ID og kortleser-ID
                     {
@@ -92,7 +86,7 @@ namespace Adgangskontroll.SENTRAL.TCP_kortleser
                         string kort_ID = dataFraKortleser.Substring(indeksKort + 2, 4);
                         string kortleser_ID = dataFraKortleser.Substring(indeksLeser + 2, 4);
 
-                        db.LeggTilLogg(2, kortleser_ID, kort_ID);   // Loggfører at døren er åpent
+                        db.LeggTilLogg(2, kortleser_ID, kort_ID);   // Loggfører at døren er åpent // må sette inn riktig metode
                         dataTilKortleser = "trash";                 // Blir ikke brukt til noe, har ikke behov for melding til bake til kortleser
                     }
                     else if (dataFraKortleser.Length == 17)     // alarm
@@ -106,7 +100,7 @@ namespace Adgangskontroll.SENTRAL.TCP_kortleser
                         string kortleser_ID = dataFraKortleser.Substring(indeksLeser + 2, 4);
                         int alarm = Convert.ToInt32(dataFraKortleser.Substring(indeksAlarm + 2, 1));
 
-                        db.LeggTilLogg(alarm, kortleser_ID, kort_ID);   // Loggfører alarm utløst
+                        db.LeggTilLogg(alarm, kortleser_ID, kort_ID);   // Loggfører alarm utløst // må sette inn riktig metode
                         dataTilKortleser = "trash";                     // Blir ikke brukt til noe, har ikke behov for melding til bake til kortleser   
 
                         Console.WriteLine($"Alarmtype {alarm} utløst!\nDør: {kortleser_ID}, Bruker: {kort_ID}");  // Viser melding i sentral om aktiv alarm
@@ -158,6 +152,8 @@ namespace Adgangskontroll.SENTRAL.TCP_kortleser
                 gjennomført = false;
             }
         }
+
+
 
         // Metode for å hente data fra database
         //// Gjør det slik at denne hendelsen kun endrer på writable til feltene; lag en ny switch-case
