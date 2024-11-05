@@ -9,6 +9,8 @@ namespace Adgangskontroll.SENTRAL
         static void Main(string[] args)
         {
             BrukerRepository brukerRepository = new BrukerRepository();
+            KortleserRepository kortleserRepository = new KortleserRepository();
+            KortleserInput kortleserInput = new KortleserInput(kortleserRepository);
             BrukerInput brukerInput = new BrukerInput();
             RapportMeny rapportMeny = new RapportMeny(brukerRepository);
 
@@ -120,7 +122,16 @@ namespace Adgangskontroll.SENTRAL
 
                     case 4:
                         // Kortleser administrasjon
-                        Console.WriteLine("Ikke implementert enda");
+                        Kortleser nyKortleser = kortleserInput.HentKortleserInput();
+                        try
+                        {
+                            kortleserRepository.OpprettKortleser(nyKortleser);
+                            Console.WriteLine("Kortleser ble lagt til i databasen.");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"En feil oppstod: {ex.Message}");
+                        }
                         break;
 
                     case 5:
