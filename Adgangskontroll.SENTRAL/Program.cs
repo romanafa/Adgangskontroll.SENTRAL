@@ -22,9 +22,10 @@ namespace Adgangskontroll.SENTRAL
                 Console.WriteLine("2. Rediger bruker");
                 Console.WriteLine("3. Slett bruker");
                 Console.WriteLine("4. Kortleser administrasjon");
-                Console.WriteLine("5. Kortleser forespørsel");
-                Console.WriteLine("6. Se rapport meny");
-                Console.WriteLine("7. Avslutt programmet");
+                Console.WriteLine("5. Oppdater kortleser");
+                Console.WriteLine("6. Slett kortleser");
+                Console.WriteLine("7. Se rapport meny");
+                Console.WriteLine("8. Avslutt programmet");
                 int menyValg;
                 try
                 {
@@ -121,7 +122,7 @@ namespace Adgangskontroll.SENTRAL
                         break;
 
                     case 4:
-                        // Kortleser administrasjon
+                        // Kortleser administrasjon - ny kortleser
                         Kortleser nyKortleser = kortleserInput.HentKortleserInput();
                         try
                         {
@@ -135,16 +136,40 @@ namespace Adgangskontroll.SENTRAL
                         break;
 
                     case 5:
-                        // Kortleser forespørsel
+                        // Oppdater kortleser
                         Console.WriteLine("Ikke implementert enda");
                         break;
 
                     case 6:
+                        // Slett kortleser
+                        while (true)
+                        {
+                            Console.WriteLine("Skriv inn ID på kortleser som skal slettes:");
+                            int kortleserId = brukerInput.ErGyldigIntInput();  // Valider om bruker skrevet inn integer
+
+                            // Finn kortleser etter ID
+                            Kortleser kortleser = kortleserRepository.FinnKortleserEtterId(kortleserId);
+                            if (kortleser == null)
+                            {
+                                // Dersom kortleseren ikke finnes, spør om ID igjen
+                                Console.WriteLine($"Ingen kortleser funnet med KortleserID {kortleserId}. Vennligst prøv igjen.");
+                            }
+                            else
+                            {
+                                // Slett kortleser fra databasen
+                                kortleserRepository.SlettKortleser(kortleserId);
+                                Console.WriteLine("Kortleser ble slettet.");
+                                break;
+                            }
+                        }
+
+                        break;
+                    case 7:
                         // Rapportmeny 
                         rapportMeny.StartRapportMeny();
                         break;
 
-                    case 7:
+                    case 8:
                         // Avslutt programmet
                         Console.WriteLine("Avslutter programmet...");
                         Environment.Exit(0);

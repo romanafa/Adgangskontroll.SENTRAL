@@ -56,5 +56,59 @@ namespace Adgangskontroll.SENTRAL.Repository
                 }
             }
         }
+
+        public void SlettKortleser(int kortleserID)
+        {
+            using (var connection = _db.GetConnection())
+            {
+                connection.Open();
+
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = "DELETE FROM Kortleser WHERE KortleserID = @KortleserID";
+                    cmd.Parameters.AddWithValue("KortleserID", kortleserID);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    if(rowsAffected > 0)
+                    {
+                        Console.WriteLine($"Kortleser med KortleserID {kortleserID} ble slettet.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Ingen kortleser funnet med KortleserID {kortleserID}.");
+                    }
+                }
+            }
+        }
+
+        public Kortleser FinnKortleserEtterId(int kortleserID)
+        {
+            using (var connection = _db.GetConnection())
+            {
+                connection.Open();
+
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+                    cmd.CommandText = "SELECT * FROM Kortleser WHERE KortleserID = @KortleserID";
+                    cmd.Parameters.AddWithValue("KortleserID", kortleserID);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Kortleser
+                            {
+                                KortleserID = reader.GetInt32(reader.GetOrdinal("KortleserID")),
+                                KortleserNummer = reader.GetString(reader.GetOrdinal("KortleserNummer")),
+                                KortleserPlassering = reader.GetString(reader.GetOrdinal("KortleserPlassering"))
+                            };
+                        }
+                    }
+                }
+            }
+            return null; // Returnerer null om ingenting er funnet
+        }
     }
 }
