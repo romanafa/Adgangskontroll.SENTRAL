@@ -20,6 +20,7 @@ namespace Adgangskontroll.SENTRAL.Repository
             get { return dtgetData; }
             set { dtgetData = value; }
         }
+
         // Metode for å sende og motta informasjon mellom sentral og database
         public DataTable getData(string sql)
         {

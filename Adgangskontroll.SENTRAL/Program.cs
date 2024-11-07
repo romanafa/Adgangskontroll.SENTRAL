@@ -1,6 +1,10 @@
 ﻿using Adgangskontroll.SENTRAL.InputHandlers;
 using Adgangskontroll.SENTRAL.Models;
 using Adgangskontroll.SENTRAL.Repository;
+using Adgangskontroll.SENTRAL.TCP_kortleser;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 
 namespace Adgangskontroll.SENTRAL
 {
@@ -12,6 +16,12 @@ namespace Adgangskontroll.SENTRAL
             BrukerInput brukerInput = new BrukerInput();
             RapportMeny rapportMeny = new RapportMeny(brukerRepository);
 
+            // Oppretter en instans av TCP-klassen
+            TCP tcpClient = new TCP();
+
+            // Starter TCP tilkoblingen
+            tcpClient.Start();
+
             bool loop = true;
             while (loop)
             {
@@ -19,7 +29,7 @@ namespace Adgangskontroll.SENTRAL
                 Console.WriteLine("1. Legg til bruker");
                 Console.WriteLine("2. Rediger bruker");
                 Console.WriteLine("3. Slett bruker");
-                Console.WriteLine("4. Kortleser administrasjon");
+                Console.WriteLine("4. Tester oppkobling til serveren."); // Kortleser administrasjon
                 Console.WriteLine("5. Kortleser forespørsel");
                 Console.WriteLine("6. Se rapport meny");
                 Console.WriteLine("7. Avslutt programmet");
@@ -119,8 +129,41 @@ namespace Adgangskontroll.SENTRAL
                         break;
 
                     case 4:
-                        // Kortleser administrasjon
-                        Console.WriteLine("Ikke implementert enda");
+                        // Kortleser administrasjon //tester tilkoblingen til kortleser
+
+                        try
+                        {
+                            // Adresse og port for serveren
+                            IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
+
+                            // Opprett en TCP-klient sokkel
+                            Socket klientSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+                            // Koble til serveren
+                            klientSokkel.Connect(serverEP);
+                            Console.WriteLine("Koblet til serveren.");
+
+                            // Send en testmelding til serveren
+                            string melding = "Testmelding";
+                            byte[] dataSomBytes = Encoding.ASCII.GetBytes(melding);
+                            klientSokkel.Send(dataSomBytes);
+
+                            // Motta svar fra serveren
+                            byte[] mottaksBuffer = new byte[1024];
+                            int bytesMottatt = klientSokkel.Receive(mottaksBuffer);
+                            string svar = Encoding.ASCII.GetString(mottaksBuffer, 0, bytesMottatt);
+                            Console.WriteLine("Svar fra serveren: " + svar);
+
+                            // Lukk tilkoblingen
+                            klientSokkel.Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Feil: " + ex.Message);
+                        }
+
+                        Console.WriteLine("Trykk på en tast for å avslutte...");
+                        Console.ReadKey();
                         break;
 
                     case 5:

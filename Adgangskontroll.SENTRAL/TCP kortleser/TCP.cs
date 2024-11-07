@@ -18,7 +18,7 @@ namespace Adgangskontroll.SENTRAL.TCP_kortleser
 
         BrukerRepository db = new BrukerRepository();
 
-        //static string kort_ID; må sette inn riktige variabler
+        //static string kort_ID; //må sette inn riktige variabler
         //static string kortleser_ID;
         //static string startTid;
         //static string sluttTid;
@@ -105,10 +105,10 @@ namespace Adgangskontroll.SENTRAL.TCP_kortleser
 
                         Console.WriteLine($"Alarmtype {alarm} utløst!\nDør: {kortleser_ID}, Bruker: {kort_ID}");  // Viser melding i sentral om aktiv alarm
                     }
-                    else if (dataFraKortleser == "RequestID")
-                    {
-                        dataTilKortleser = Bruker.BrukerID.Text;  // Sender kortleser-ID tilbake til kortleser
-                    }
+                    //else if (dataFraKortleser == "RequestID")
+                    //{
+                    //    dataTilKortleser = ;  // Sender kortleser-ID tilbake til kortleser, må implementere metode for å hente kortleser-ID
+                    //}
                     else dataTilKortleser = "Retur: " + dataFraKortleser;           // Blir ikke brukt til annet enn testing
 
                     SendData(kommSokkel, dataTilKortleser, out harForbindelse);     // Sender aktuell data som har blitt generert ut ifra hvilken hendelse som har skjedd
@@ -156,7 +156,7 @@ namespace Adgangskontroll.SENTRAL.TCP_kortleser
 
 
         // Metode for å hente data fra database
-        //// Gjør det slik at denne hendelsen kun endrer på writable til feltene; lag en ny switch-case
+        // Gjør det slik at denne hendelsen kun endrer på writable til feltene; lag en ny switch-case
         //private void CB_Alarmtype_SelectedIndexChanged(object sender, EventArgs e)
         //{
         //    dataGridView1.ClearSelection();
