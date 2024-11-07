@@ -25,7 +25,8 @@ namespace Adgangskontroll.SENTRAL
                 Console.WriteLine("5. Oppdater kortleser");
                 Console.WriteLine("6. Slett kortleser");
                 Console.WriteLine("7. Se rapport meny");
-                Console.WriteLine("8. Avslutt programmet");
+                Console.WriteLine("8. Se rapport meny");
+                Console.WriteLine("9. Avslutt programmet");
                 int menyValg;
                 try
                 {
@@ -165,11 +166,15 @@ namespace Adgangskontroll.SENTRAL
 
                         break;
                     case 7:
+                        // Kortleser
+                        Console.WriteLine("Ikke implementert enda");
+                        break;
+                    case 8:
                         // Rapportmeny 
                         rapportMeny.StartRapportMeny();
                         break;
 
-                    case 8:
+                    case 9:
                         // Avslutt programmet
                         Console.WriteLine("Avslutter programmet...");
                         Environment.Exit(0);
