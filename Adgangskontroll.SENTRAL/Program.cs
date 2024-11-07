@@ -18,9 +18,8 @@ namespace Adgangskontroll.SENTRAL
 
             // Oppretter en instans av TCP-klassen
             TCP tcpClient = new TCP();
-
             // Starter TCP tilkoblingen
-            tcpClient.Start();
+            tcpClient.StartServer("127.0.0.1", 9050);
 
             bool loop = true;
             while (loop)

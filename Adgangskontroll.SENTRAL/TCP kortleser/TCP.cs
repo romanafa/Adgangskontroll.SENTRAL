@@ -9,13 +9,14 @@ using Adgangskontroll.Kortleser;
 
 namespace Adgangskontroll.SENTRAL.TCP_kortleser
 {
-    internal class TCP
+    public class TCP
     {
         // VelgerTCP/IP og adresser + portnummer
-        Socket lytteSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //Socket lytteSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //Socket lytteSokkel = StartServer("127.0.0.1", 9050);
 
         // Oppgir server sin IP-adresse og portnummer
-        IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("192.168.10.168"), 9050);
+        //IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
 
         bool harforbindelse = true;
 
@@ -28,63 +29,73 @@ namespace Adgangskontroll.SENTRAL.TCP_kortleser
 
 
 
-        public void Start()
+        //public void Start()
+        //{
+        //    Console.WriteLine("Kobler til server...");
+        //    // Kobler til server
+        //    //lytteSokkel.Connect(serverEP);
+
+        //    Console.WriteLine("Kobler til server...");
+        //    // Sender data til server
+        //    byte[] data = Encoding.ASCII.GetBytes("Kortleser koblet til server");
+        //    lytteSokkel.Send(data);
+
+        //    // Oppretter en lytte-sokkel som lytter på alle nettverksgrensesnitt (IPAddress.Any)
+        //    IPEndPoint lytteEndPoint = new IPEndPoint(IPAddress.Any, 9050);
+        //    //Socket lytteSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            
+
+        //    try
+        //    {
+        //        lytteSokkel.Bind(lytteEndPoint);
+        //        lytteSokkel.Listen(10);
+        //        Console.WriteLine("Serveren lytter på port 9050...");
+
+        //        while (true)
+        //        {
+        //            Socket kommSokkel = lytteSokkel.Accept();
+        //            Console.WriteLine("En klient har koblet til!");
+
+        //            byte[] mottattBuffer = new byte[1024];
+        //            int mottattStørrelse = kommSokkel.Receive(mottattBuffer);
+        //            string mottattTekst = Encoding.ASCII.GetString(mottattBuffer, 0, mottattStørrelse);
+        //            Console.WriteLine("Mottatt fra klient: " + mottattTekst);
+
+        //            string respons = "Server mottok din melding!";
+        //            byte[] responsBytes = Encoding.ASCII.GetBytes(respons);
+        //            kommSokkel.Send(responsBytes);
+
+        //            kommSokkel.Shutdown(SocketShutdown.Both);
+        //            kommSokkel.Close();
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine("Feil: " + e.ToString());
+        //    }
+        //    finally
+        //    {
+        //        lytteSokkel.Close();
+        //    }
+
+        //    //// Mottar data fra server
+        //    //byte[] mottattData = new byte[1024];
+        //    //int antallBytes = lytteSokkel.Receive(mottattData);
+        //    //string mottattTekst = Encoding.ASCII.GetString(mottattData, 0, antallBytes);
+        //    //Console.WriteLine("Mottatt fra server: " + mottattTekst);
+
+        //    // Lukker forbindelsen
+        //    lytteSokkel.Shutdown(SocketShutdown.Both);
+        //    lytteSokkel.Close();
+        //}
+        public Socket StartServer(string IP, int port)
         {
-            // Kobler til server
-            lytteSokkel.Connect(serverEP);
-
-            // Sender data til server
-            byte[] data = Encoding.ASCII.GetBytes("Kortleser koblet til server");
-            lytteSokkel.Send(data);
-
-            // Oppretter en lytte-sokkel som lytter på alle nettverksgrensesnitt (IPAddress.Any)
-            //IPEndPoint lytteEndPoint = new IPEndPoint(IPAddress.Any, 9050);
-            //Socket lytteSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-
-
-            //try
-            //{
-            //    lytteSokkel.Bind(lytteEndPoint);
-            //    lytteSokkel.Listen(10);
-            //    Console.WriteLine("Serveren lytter på port 9050...");
-
-            //    while (true)
-            //    {
-            //        Socket kommSokkel = lytteSokkel.Accept();
-            //        Console.WriteLine("En klient har koblet til!");
-
-            //        byte[] mottattBuffer = new byte[1024];
-            //        int mottattStørrelse = kommSokkel.Receive(mottattBuffer);
-            //        string mottattTekst = Encoding.ASCII.GetString(mottattBuffer, 0, mottattStørrelse);
-            //        Console.WriteLine("Mottatt fra klient: " + mottattTekst);
-
-            //        string respons = "Server mottok din melding!";
-            //        byte[] responsBytes = Encoding.ASCII.GetBytes(respons);
-            //        kommSokkel.Send(responsBytes);
-
-            //        kommSokkel.Shutdown(SocketShutdown.Both);
-            //        kommSokkel.Close();
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine("Feil: " + e.ToString());
-            //}
-            //finally
-            //{
-            //    lytteSokkel.Close();
-            //}
-
-            // Mottar data fra server
-            byte[] mottattData = new byte[1024];
-            int antallBytes = lytteSokkel.Receive(mottattData);
-            string mottattTekst = Encoding.ASCII.GetString(mottattData, 0, antallBytes);
-            Console.WriteLine("Mottatt fra server: " + mottattTekst);
-
-            // Lukker forbindelsen
-            lytteSokkel.Shutdown(SocketShutdown.Both);
-            lytteSokkel.Close();
+            Socket svar = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse(IP), port);
+            svar.Bind(serverEP);
+            svar.Listen(10);
+            return svar;
         }
         public void Klientkommunikasjon(object o)
         {
