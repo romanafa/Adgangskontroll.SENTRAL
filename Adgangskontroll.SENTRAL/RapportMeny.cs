@@ -97,6 +97,5 @@ namespace Adgangskontroll.SENTRAL
             Console.WriteLine("");
         }
 
-        private void
     }
 }

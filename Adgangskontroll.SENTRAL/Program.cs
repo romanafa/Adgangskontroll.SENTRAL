@@ -130,7 +130,7 @@ namespace Adgangskontroll.SENTRAL
 
                     case 4:
                         // Kortleser administrasjon //tester tilkoblingen til kortleser
-
+                        Console.WriteLine("Tester oppkobling til kortleser...");
                         try
                         {
                             // Adresse og port for serveren
@@ -141,7 +141,7 @@ namespace Adgangskontroll.SENTRAL
 
                             // Koble til serveren
                             klientSokkel.Connect(serverEP);
-                            Console.WriteLine("Koblet til serveren.");
+                            Console.WriteLine("Koblet til kortleseren.");
 
                             // Send en testmelding til serveren
                             string melding = "Testmelding";

@@ -3,6 +3,9 @@ using Adgangskontroll.SENTRAL.Repository;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Adgangskontroll.Kortleser;
+
+
 
 namespace Adgangskontroll.SENTRAL.TCP_kortleser
 {
@@ -12,7 +15,7 @@ namespace Adgangskontroll.SENTRAL.TCP_kortleser
         Socket lytteSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         // Oppgir server sin IP-adresse og portnummer
-        IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9050);
+        IPEndPoint serverEP = new IPEndPoint(IPAddress.Parse("192.168.10.168"), 9050);
 
         bool harforbindelse = true;
 
@@ -33,6 +36,45 @@ namespace Adgangskontroll.SENTRAL.TCP_kortleser
             // Sender data til server
             byte[] data = Encoding.ASCII.GetBytes("Kortleser koblet til server");
             lytteSokkel.Send(data);
+
+            // Oppretter en lytte-sokkel som lytter på alle nettverksgrensesnitt (IPAddress.Any)
+            //IPEndPoint lytteEndPoint = new IPEndPoint(IPAddress.Any, 9050);
+            //Socket lytteSokkel = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+
+
+            //try
+            //{
+            //    lytteSokkel.Bind(lytteEndPoint);
+            //    lytteSokkel.Listen(10);
+            //    Console.WriteLine("Serveren lytter på port 9050...");
+
+            //    while (true)
+            //    {
+            //        Socket kommSokkel = lytteSokkel.Accept();
+            //        Console.WriteLine("En klient har koblet til!");
+
+            //        byte[] mottattBuffer = new byte[1024];
+            //        int mottattStørrelse = kommSokkel.Receive(mottattBuffer);
+            //        string mottattTekst = Encoding.ASCII.GetString(mottattBuffer, 0, mottattStørrelse);
+            //        Console.WriteLine("Mottatt fra klient: " + mottattTekst);
+
+            //        string respons = "Server mottok din melding!";
+            //        byte[] responsBytes = Encoding.ASCII.GetBytes(respons);
+            //        kommSokkel.Send(responsBytes);
+
+            //        kommSokkel.Shutdown(SocketShutdown.Both);
+            //        kommSokkel.Close();
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine("Feil: " + e.ToString());
+            //}
+            //finally
+            //{
+            //    lytteSokkel.Close();
+            //}
 
             // Mottar data fra server
             byte[] mottattData = new byte[1024];
