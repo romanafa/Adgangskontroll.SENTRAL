@@ -1,22 +1,38 @@
 ﻿using Adgangskontroll.SENTRAL.Data;
 using Adgangskontroll.SENTRAL.Models;
 using Npgsql;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
 
 namespace Adgangskontroll.SENTRAL.Repository
 {
     public class BrukerRepository
     {
         private readonly DbConnection _db;
+        private static DataTable dtgetData = new DataTable(); // DataTable for å lagre data fra database
 
         public BrukerRepository()
         {
             _db = new DbConnection();
         }
+
+        public static DataTable DtgetData
+        {
+            get { return dtgetData; }
+            set { dtgetData = value; }
+        }
+
+        // Metode for å sende og motta informasjon mellom sentral og database
+        public DataTable getData(string sql)
+        {
+            DataTable dt = new DataTable();
+            using (var cmd = new NpgsqlCommand())
+            {
+                NpgsqlDataReader dr = cmd.ExecuteReader();
+                dt.Load(dr);
+            }
+            return dt;
+        }
+
 
         public void OpprettBruker(Bruker bruker)
         {
@@ -197,7 +213,7 @@ namespace Adgangskontroll.SENTRAL.Repository
                     int teller = resultat != null ? Convert.ToInt32(resultat) : 0;
 
                     // om teller er > 0, bruker med samme epost eksisterer
-                    return teller > 0;  
+                    return teller > 0;
                 }
             }
         }
@@ -222,7 +238,7 @@ namespace Adgangskontroll.SENTRAL.Repository
                     int teller = resultat != null ? Convert.ToInt32(resultat) : 0;
 
                     // om teller er > 0, , bruker med samme kort ID eksisterer
-                    return teller > 0;  
+                    return teller > 0;
                 }
             }
         }
@@ -262,6 +278,180 @@ namespace Adgangskontroll.SENTRAL.Repository
 
             // Return null if no user is found
             return null;
+        }
+
+
+        // Autentisering tar inn kort_id, pin og kortleser_id.
+        // Sjekker om pin matcher kort_id, om kort_id er innenfor gyldighetsperioden
+        // og om kort_id har tilgang til kortleser_id.
+        // Hvis prossesen feiler returnerer den blankt, om den er er ok returnerer den
+        // en rad med bruker og kortleser (den informasjonen som ble sendt inn) spleiset sammen.
+        public string Autentisering(string kort_id, string pin, string kortleser_id)
+        {
+            string suksess;
+            string query = ($"select * from tilgangrelasjon join bruker on tilgangrelasjon.tilgang_id = bruker.tilgang_id join kortleser on tilgangrelasjon.seksjon_id = kortleser.seksjon_id where kort_id = '{kort_id}' and pin = '{pin}' and kortleser_id = '{kortleser_id}' and CURRENT_DATE between gyldighet_start and gyldighet_slutt;");
+            using (var dbTilkobling = _db.GetConnection())
+            {
+                using var cmd = new NpgsqlCommand(query, dbTilkobling);
+
+                using NpgsqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())  // Kommando for å "lese" om vi får returnert en tabell fra spørringen vi sender
+                {
+                    suksess = "Godkjent";
+                }
+                else  // Dersom vi ikke får returnert en tabell fra spørringen
+                {
+                    suksess = "Ikke godkjent";
+                }
+            }
+            return suksess; // Blir sendt som dataTilKortleser
+        }
+
+
+
+        // Legger inn en ny rad i kortlesertabellen 
+        public DataTable LeggTilNyKortleser(string kortleser_id, string seksjon_id, string beskrivelse)
+        {
+            dtgetData = getData($"insert into kortleser values ('{kortleser_id}', '{seksjon_id}', '{beskrivelse}');");
+            DataTable dt = dtgetData;
+
+            return dt;
+        }
+
+        // Skriver inn alle verdiene til en rad i kortlesertabellen på nytt, ved å identifisere raden utifra kort_id
+        public DataTable EndreKortleser(string kortleser_id, string seksjon_id, string beskrivelse)
+        {
+            dtgetData = getData($"update kortleser set seksjon_id = {seksjon_id}, beskrivelse = '{beskrivelse}' where kortleser_id = '{kortleser_id}'");
+            DataTable dt = dtgetData;
+
+            return dt;
+        }
+
+        // Sletter en rad fra kortlesertabellen, ved å identifisere raden utofra kort_id
+        public DataTable SlettKortleser(string kortleser_id)
+        {
+            dtgetData = getData($"delete from kortleser where kortleser_id = '{kortleser_id}'");
+            DataTable dt = dtgetData;
+
+            return dt;
+        }
+
+        // Loggfører og legger inn en rad i loggtabellen
+        public DataTable LeggTilLogg(int logg_type, string kortleser_id, string kort_id)
+        {
+
+            dtgetData = getData($"insert into logg values ({logg_type}, CURRENT_TIMESTAMP, '{kortleser_id}', '{kort_id}');");
+            DataTable dt = dtgetData;
+
+            return dt;
+        }
+
+        // Returnerer en tabell med alle rader i kortlesertabellen
+        public DataTable VisKortlesere()
+        {
+            dtgetData = getData("select * from kortleser");
+            DataTable dt = BrukerRepository.DtgetData;
+
+            return dt;
+        }
+
+        // Returnerer en tabell med alle rader i kortlesertabellen for en valgt seksjon
+        public DataTable VisKortleserVedSeksjon(int seksjon_id)
+        {
+            dtgetData = getData($"select * from kortleser where seksjon_id = {seksjon_id}");
+            DataTable dt = BrukerRepository.DtgetData;
+
+            return dt;
+        }
+
+        // Returener en tabell med alle rader i brukertabellen
+        public DataTable VisBrukere()
+        {
+            dtgetData = getData("select * from bruker");
+            DataTable dt = BrukerRepository.dtgetData;
+
+            return dt;
+        }
+
+        // Lister adgangslogg (inkludert forsøk på adgang) utifra kort_id mellom to datoer
+        public DataTable VisAdgangsloggForBrukerVedDato(string kort_id, string start, string slutt)
+        {
+            dtgetData = getData($"select * from logg where kort_id = '{kort_id}' and (logg_type = 0 or logg_type = 1 or logg_type = 2) and logg_tid between '{start}' and '{slutt}'");
+            DataTable dt = BrukerRepository.DtgetData;
+
+            return dt;
+        }
+
+        // Returnerer alle innpasseringsforsøk for en dør med ikke-godkjent adgang (uansett bruker) mellom to datoer
+        public DataTable VisNegativAdgangsloggKortleserVedDato(string kortleser_id, string start, string slutt)
+        {
+            dtgetData = getData($"select * from logg where kortleser_id = '{kortleser_id}' and logg_type = 1 and logg_tid between '{start}' and '{slutt}'");
+            DataTable dt = BrukerRepository.DtgetData;
+
+            return dt;
+        }
+
+        // Returnerer alarmer
+        public DataTable VisAlarm()
+        {
+            dtgetData = getData($"select * from logg where (logg_type = 3 or logg_type = 4)");
+            DataTable dt = BrukerRepository.DtgetData;
+
+            return dt;
+        }
+
+        // Returnerer alarmer ved kort_id
+        public DataTable VisAlarmVedBruker(string kort_id)
+        {
+            dtgetData = getData($"select * from logg where (logg_type = 3 or logg_type = 4) and kort_id = '{kort_id}'");
+            DataTable dt = BrukerRepository.DtgetData;
+
+            return dt;
+        }
+
+        // Returnerer alarmer ved kortleser_id
+        public DataTable VisAlarmVedKortleser(string kortleser_id)
+        {
+            dtgetData = getData($"select * from logg where (logg_type = 3 or logg_type = 4) and kortleser_id = '{kortleser_id}'");
+            DataTable dt = BrukerRepository.DtgetData;
+
+            return dt;
+        }
+
+        // Returnerer alarmer mellom to datoer
+        public DataTable VisAlarmVedDato(string start, string slutt)
+        {
+            dtgetData = getData($"select * from logg where (logg_type = 3 or logg_type = 4) and logg_tid between '{start}' and '{slutt}'");
+            DataTable dt = BrukerRepository.DtgetData;
+
+            return dt;
+        }
+
+        // returnerer alle entries i loggtabellen
+        public DataTable VisLogg()
+        {
+            dtgetData = getData($"select * from logg");
+            DataTable dt = BrukerRepository.DtgetData;
+
+            return dt;
+        }
+
+        // Returnerer alle entries fra loggtabellen basert på kort_id
+        public DataTable VisLoggVedBruker(string kort_id)
+        {
+            dtgetData = getData($"select * from logg where kort_id = '{kort_id}'");
+            DataTable dt = BrukerRepository.DtgetData;
+
+            return dt;
+        }
+
+        // Returnerer alle entries fra loggtabellen basert på kortleser_id
+        public DataTable VisLoggVedKortleser(string kortleser_id)
+        {
+            dtgetData = getData($"select * from logg where kortleser_id = '{kortleser_id}'");
+            DataTable dt = BrukerRepository.DtgetData;
+
+            return dt;
         }
     }
 }

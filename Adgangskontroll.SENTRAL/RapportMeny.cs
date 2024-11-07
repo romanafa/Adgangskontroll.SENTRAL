@@ -1,10 +1,6 @@
 ﻿using Adgangskontroll.SENTRAL.Models;
 using Adgangskontroll.SENTRAL.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Adgangskontroll.SENTRAL.TCP_kortleser;
 
 namespace Adgangskontroll.SENTRAL
 {
@@ -49,7 +45,7 @@ namespace Adgangskontroll.SENTRAL
                         break;
                     case 2:
                         // Liste adgangslogg på grunnlag av brukernavn mellom to datoer
-                        Console.WriteLine("Ikke implementert enda");
+                        Console.WriteLine("Ikke implementert enda"); 
                         break;
                     case 3:
                         // Liste alle innpasseringsforsøk for en dør med ikke-godkjent adgang mellom to datoer 
@@ -100,5 +96,6 @@ namespace Adgangskontroll.SENTRAL
             }
             Console.WriteLine("");
         }
+
     }
 }
