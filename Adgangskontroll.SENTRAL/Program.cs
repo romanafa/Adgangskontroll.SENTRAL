@@ -134,7 +134,7 @@ namespace Adgangskontroll.SENTRAL
 
                     case 4:
                         // Kortleser administrasjon - ny kortleser
-                        Kortleser nyKortleser = kortleserInput.HentKortleserInput();
+                        KortleserModel nyKortleser = kortleserInput.HentKortleserInput();
                         try
                         {
                             kortleserRepository.OpprettKortleser(nyKortleser);
@@ -159,7 +159,7 @@ namespace Adgangskontroll.SENTRAL
                             int kortleserId = brukerInput.ErGyldigIntInput();  // Valider om bruker skrevet inn integer
 
                             // Finn kortleser etter ID
-                            Kortleser kortleser = kortleserRepository.FinnKortleserEtterId(kortleserId);
+                            KortleserModel kortleser = kortleserRepository.FinnKortleserEtterId(kortleserId);
                             if (kortleser == null)
                             {
                                 // Dersom kortleseren ikke finnes, spør om ID igjen

@@ -17,9 +17,9 @@ namespace Adgangskontroll.SENTRAL.InputHandlers
             _kortleserRepository = kortleserRepository;
         }
 
-        public Kortleser HentKortleserInput()
+        public KortleserModel HentKortleserInput()
         {
-            Kortleser nyKortleser = new Kortleser();
+            KortleserModel nyKortleser = new KortleserModel();
 
             Console.WriteLine("Skriv inn kortleser nummer (4 siffer):");
             nyKortleser.KortleserNummer = ValiderKortleserNummer();

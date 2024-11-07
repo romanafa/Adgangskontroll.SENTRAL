@@ -18,7 +18,7 @@ namespace Adgangskontroll.SENTRAL.Repository
             _db = new DbConnection();
         }
 
-        public void OpprettKortleser(Kortleser kortleser)
+        public void OpprettKortleser(KortleserModel kortleser)
         {
             using (var connection = _db.GetConnection())
             {
@@ -82,7 +82,7 @@ namespace Adgangskontroll.SENTRAL.Repository
             }
         }
 
-        public Kortleser FinnKortleserEtterId(int kortleserID)
+        public KortleserModel FinnKortleserEtterId(int kortleserID)
         {
             using (var connection = _db.GetConnection())
             {
@@ -98,7 +98,7 @@ namespace Adgangskontroll.SENTRAL.Repository
                     {
                         if (reader.Read())
                         {
-                            return new Kortleser
+                            return new KortleserModel
                             {
                                 KortleserID = reader.GetInt32(reader.GetOrdinal("KortleserID")),
                                 KortleserNummer = reader.GetString(reader.GetOrdinal("KortleserNummer")),

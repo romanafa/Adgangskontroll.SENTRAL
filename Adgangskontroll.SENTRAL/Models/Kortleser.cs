@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Adgangskontroll.SENTRAL.Models
 {
-    public class Kortleser
+    public class KortleserModel
     {
         public int KortleserID { get; set; } 
         public string KortleserNummer { get; set; }      // CHAR(4)
