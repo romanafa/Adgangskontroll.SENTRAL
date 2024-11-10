@@ -30,6 +30,24 @@ namespace Adgangskontroll.SENTRAL.InputHandlers
             return nyKortleser;
         }
 
+        public KortleserModel HentOppdatertKortleserInput(int kortleserID)
+        {
+            KortleserModel kortleser = new KortleserModel();
+            kortleser.KortleserID = kortleserID;
+
+            // Valider input
+            Console.WriteLine("Skriv inn nytt kortleser nummer (4 siffer), eller trykk Enter for å beholde eksisterende nummer:");
+            kortleser.KortleserNummer = ValiderKortleserNummer();
+           
+
+            // Valider input
+            Console.WriteLine("Skriv inn ny plassering (maks 10 tegn), eller trykk Enter for å beholde eksisterende plassering:");
+            kortleser.KortleserPlassering = ValiderKortleserPlassering();
+
+
+            return kortleser;
+        }
+
         private string ValiderKortleserNummer()
         {
             string kortleserNummer;
@@ -88,6 +106,33 @@ namespace Adgangskontroll.SENTRAL.InputHandlers
                 }
             }
             return true;
+        }
+
+        private string HentKortleserInput(
+            string promptMessage,
+            string existingValue,
+            Func<string, bool> validate,
+            bool isRequired = false)
+        {
+            string input;
+            do
+            {
+                Console.WriteLine(promptMessage);
+                input = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(input))
+                {
+                    return existingValue;
+                }
+                else if (validate(input))
+                {
+                    return input;
+                }
+                else
+                {
+                    Console.WriteLine("Ugyldig input. Vennligst prøv igjen.");
+                }
+            } while (true);
         }
     }
 }

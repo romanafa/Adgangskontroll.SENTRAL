@@ -30,7 +30,7 @@ namespace Adgangskontroll.SENTRAL
                 Console.WriteLine("1. Legg til bruker");
                 Console.WriteLine("2. Rediger bruker");
                 Console.WriteLine("3. Slett bruker");
-                Console.WriteLine("4. Kortleser administrasjon");
+                Console.WriteLine("4. Legg til kortleser");
                 Console.WriteLine("5. Oppdater kortleser");
                 Console.WriteLine("6. Slett kortleser");
                 Console.WriteLine("7. Test oppkobling til serveren.");
@@ -148,7 +148,36 @@ namespace Adgangskontroll.SENTRAL
 
                     case 5:
                         // Oppdater kortleser
-                        Console.WriteLine("Ikke implementert enda");
+                        while (true)
+                        {
+                            Console.WriteLine("Skriv inn KortleserID på kortleseren som skal oppdateres:");
+
+                            // Valider KortleserID
+                            int kortleserID = brukerInput.ErGyldigIntInput();
+
+                            KortleserModel eksisterendeKortleser = kortleserRepository.FinnKortleserEtterId(kortleserID);
+
+                            if (eksisterendeKortleser == null)
+                            {
+                                Console.WriteLine($"Ingen kortleser funnet med KortleserID {kortleserID}. Vennligst prøv igjen.");
+                            }
+                            else
+                            {
+                                KortleserModel oppdatertKortleser = kortleserInput.HentOppdatertKortleserInput(kortleserID);
+
+                                if (oppdatertKortleser != null)
+                                {
+                                    kortleserRepository.OppdaterKortleser(oppdatertKortleser);
+                                    Console.WriteLine("Kortleser ble oppdatert.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Kortleseroppdatering ble ikke utført.");
+                                }
+
+                                break;
+                            }
+                        }
                         break;
 
                     case 6:

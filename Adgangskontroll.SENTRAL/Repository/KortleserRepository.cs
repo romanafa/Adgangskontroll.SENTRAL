@@ -1,5 +1,7 @@
 ﻿using Adgangskontroll.SENTRAL.Data;
+using Adgangskontroll.SENTRAL.InputHandlers;
 using Adgangskontroll.SENTRAL.Models;
+using Adgangskontroll.SENTRAL.Repository;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -82,6 +84,53 @@ namespace Adgangskontroll.SENTRAL.Repository
             }
         }
 
+        public void OppdaterKortleser(KortleserModel kortleser)
+        {
+            using (var connection = _db.GetConnection())
+            {
+                connection.Open();
+
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = connection;
+
+                    string oppdaterSpørring = "UPDATE Kortleser SET ";
+                    bool erFørsteFelt = true;
+
+                    if (!string.IsNullOrEmpty(kortleser.KortleserNummer))
+                    {
+                        oppdaterSpørring += "KortleserNummer = @KortleserNummer";
+                        erFørsteFelt = false;
+                    }
+
+                    if (!string.IsNullOrEmpty(kortleser.KortleserPlassering))
+                    {
+                        oppdaterSpørring += (erFørsteFelt ? "" : ", ") + "KortleserPlassering = @KortleserPlassering";
+                    }
+
+                    oppdaterSpørring += " WHERE KortleserID = @KortleserID";
+                    cmd.CommandText = oppdaterSpørring;
+
+                    if (!string.IsNullOrEmpty(kortleser.KortleserNummer))
+                        cmd.Parameters.AddWithValue("KortleserNummer", kortleser.KortleserNummer);
+                    if (!string.IsNullOrEmpty(kortleser.KortleserPlassering))
+                        cmd.Parameters.AddWithValue("KortleserPlassering", kortleser.KortleserPlassering);
+
+                    cmd.Parameters.AddWithValue("KortleserID", kortleser.KortleserID);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine("Kortleser ble oppdatert i databasen.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ingen endringer ble gjort.");
+                    }
+                }
+            }
+        }
+
         public KortleserModel FinnKortleserEtterId(int kortleserID)
         {
             using (var connection = _db.GetConnection())
@@ -112,3 +161,8 @@ namespace Adgangskontroll.SENTRAL.Repository
         }
     }
 }
+
+
+
+
+
