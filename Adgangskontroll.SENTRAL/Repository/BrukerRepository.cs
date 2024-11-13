@@ -33,7 +33,6 @@ namespace Adgangskontroll.SENTRAL.Repository
             return dt;
         }
 
-
         public void OpprettBruker(Bruker bruker)
         {
             using (var dbTilkobling = _db.GetConnection())
@@ -307,34 +306,6 @@ namespace Adgangskontroll.SENTRAL.Repository
             return suksess; // Blir sendt som dataTilKortleser
         }
 
-
-
-        // Legger inn en ny rad i kortlesertabellen 
-        public DataTable LeggTilNyKortleser(string kortleser_id, string seksjon_id, string beskrivelse)
-        {
-            dtgetData = getData($"insert into kortleser values ('{kortleser_id}', '{seksjon_id}', '{beskrivelse}');");
-            DataTable dt = dtgetData;
-
-            return dt;
-        }
-
-        // Skriver inn alle verdiene til en rad i kortlesertabellen på nytt, ved å identifisere raden utifra kort_id
-        public DataTable EndreKortleser(string kortleser_id, string seksjon_id, string beskrivelse)
-        {
-            dtgetData = getData($"update kortleser set seksjon_id = {seksjon_id}, beskrivelse = '{beskrivelse}' where kortleser_id = '{kortleser_id}'");
-            DataTable dt = dtgetData;
-
-            return dt;
-        }
-
-        // Sletter en rad fra kortlesertabellen, ved å identifisere raden utofra kort_id
-        public DataTable SlettKortleser(string kortleser_id)
-        {
-            dtgetData = getData($"delete from kortleser where kortleser_id = '{kortleser_id}'");
-            DataTable dt = dtgetData;
-
-            return dt;
-        }
 
         // Loggfører og legger inn en rad i loggtabellen
         public DataTable LeggTilLogg(int logg_type, string kortleser_id, string kort_id)

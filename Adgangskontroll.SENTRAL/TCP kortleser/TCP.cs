@@ -3,8 +3,6 @@ using Adgangskontroll.SENTRAL.Repository;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Adgangskontroll.Kortleser;
-
 
 
 namespace Adgangskontroll.SENTRAL.TCP_kortleser
